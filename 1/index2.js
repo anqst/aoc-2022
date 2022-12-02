@@ -1,25 +1,13 @@
-const fs = require('fs');
-const os = require('os');
+const os = require("os");
+const fileman = require("../fileman");
 
-function readTextFromFile(filePath) {
-    return new Promise(function (resolve, reject) {
-        fs.readFile(filePath, "utf8", function (err, data) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(data);
-            }
-        });
-    });
-}
-
-readTextFromFile("./test1.in").then(function (input) {
+fileman.readTextFromFile("./test1.in").then(function (input) {
 
     let values = [];
     let total = 0;
 
-    const elfs = input.trim().split(os.EOL + os.EOL);
-    elfs.forEach(function (elf) {
+    const elves = input.trim().split(os.EOL + os.EOL);
+    elves.forEach(function (elf) {
 
         const calories = elf.trim().split(os.EOL);
 
@@ -45,14 +33,10 @@ readTextFromFile("./test1.in").then(function (input) {
         return prev += curr;
     });
 
-    fs.writeFile("./test1.out", total.toString(), "utf8", function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("success");
-        }
-    })
+    fileman.writeTextToFile("./test2.out", total.toString()).catch(function (err) {
+        console.log(err);
+    });
 
 }).catch(function (err) {
     console.log(err);
-})
+});
