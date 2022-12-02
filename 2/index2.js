@@ -1,4 +1,3 @@
-const { debug } = require("console");
 const os = require("os");
 const fileman = require("../fileman");
 
