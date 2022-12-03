@@ -1,5 +1,4 @@
 const os = require("os");
-const { exit } = require("process");
 const fileman = require("../fileman");
 
 fileman.readTextFromFile("./input.in").then(function (input) {
