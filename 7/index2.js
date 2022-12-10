@@ -90,11 +90,10 @@ fs.writeFileSync("./metadata.json", JSON.stringify(metadata), "utf8");
 
 // final calculation
 const needToFree = metadata["/"].size - (70000000 - 30000000);
-let closestHigher = -1;
+let closestHigher;
 
 Object.entries(metadata).forEach(function ([key, value]) {
-
-    if (value["size"] >= needToFree && Math.abs(value["size"] - needToFree) < Math.abs(closestHigher - needToFree)) {
+    if (value["size"] >= needToFree && (closestHigher === undefined || Math.abs(value["size"] - needToFree) < Math.abs(closestHigher - needToFree))) {
         closestHigher = value["size"];
     }
 });
