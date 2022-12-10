@@ -2,14 +2,11 @@ const os = require("os");
 const fs = require("fs");
 const input = fs.readFileSync("./input.in", "utf8").trim();
 
-const metadata = { "/": { "size": 0 } };
-
-let path = [];
+const metadata = { "/": { "size": 0, "totalFiles": 0 } };
 const directoryTree = {};
-let currentDirectory = directoryTree;
 
 function getMetadataPath(directoryPath) {
-    return `/${directoryPath.join("/")}`;
+    return `/${directoryPath.length > 0 ? (directoryPath.join("/") + "/") : ""}`;
 }
 
 function getCurrentDirectory(path) {
@@ -22,8 +19,9 @@ function getCurrentDirectory(path) {
     return currentDirectory;
 }
 
-
 let firstArg, secondArg, thirdArg;
+let path = [];
+let currentDirectory = directoryTree;
 
 input.split(os.EOL).forEach(function (command) {
 
@@ -55,22 +53,32 @@ input.split(os.EOL).forEach(function (command) {
 
             break;
 
-        case "dir": // new directory
-            if (currentDirectory[secondArg] === undefined) {
+        case "dir":
+            if (currentDirectory[secondArg] === undefined) { // new directory
                 currentDirectory[secondArg] = {};
-                metadata[getMetadataPath([...path, secondArg])] = { "size": 0 };
+                metadata[getMetadataPath([...path, secondArg])] = { "size": 0, "totalFiles": 0 };
             }
             break;
 
-        default: // new file
-            currentDirectory[secondArg] = parseInt(firstArg);
-            let xPath = [...path]; // clone path - do not reference it
+        default:
+            if (currentDirectory[secondArg] === undefined) { // new file
 
-            path.forEach(function () {
-                metadata[getMetadataPath(xPath)].size += parseInt(firstArg);
-                xPath.pop();
-            })
-            metadata[getMetadataPath([])].size += parseInt(firstArg);
+                currentDirectory[secondArg] = parseInt(firstArg);
+                let xPath = [...path]; // clone path - do not reference it
+
+                for (let i = 0; i < path.length + 1; i++) {
+
+                    // console.log(JSON.stringify(xPath) + " : " + secondArg); // debug
+
+                    metadata[getMetadataPath(xPath)].size += parseInt(firstArg);
+                    metadata[getMetadataPath(xPath)].totalFiles += 1;
+
+                    if (xPath.length > 0) {
+                        xPath.pop();
+                    }
+                }
+            }
+            break;
     }
 });
 
@@ -85,10 +93,8 @@ let total = 0;
 
 Object.entries(metadata).forEach(function ([key, value]) {
 
-    value = value["size"];
-
-    if (value <= 100000) {
-        total += value;
+    if (value["size"] <= 100000) {
+        total += value["size"];
     }
 });
 
