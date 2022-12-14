@@ -12,24 +12,22 @@ input.split(os.EOL).forEach(function (e) {
     row = row.map(function (e) {
         return parseInt(e);
     });
-
-    row.unshift(-1);
     grid.push(row);
 });
 
-const firstLastRow = Array(grid[0].length).fill(-1);
-grid.unshift(firstLastRow);
+total += grid.length * 2 + (grid[0].length - 2) * 2 // edges
 
-console.log(grid)
+let current, visible, downArray, rightArray;
 
-for (let y = 2; y < grid.length - 1; y++) { // y axis
+for (let y = 1; y < grid.length - 1; y++) { // y axis
 
-    for (let x = 2; x < grid[0].length - 1; x++) { // x axis
+    for (let x = 1; x < grid[0].length - 1; x++) { // x axis
 
-        const current = grid[y][x];
-        // console.log(current);
+        downArray = [];
+        rightArray = [];
 
-        let visible = false;
+        current = grid[y][x];
+        visible = false;
 
         if (current > grid[0][x]) { // up
             grid[0][x] = current;
@@ -41,19 +39,16 @@ for (let y = 2; y < grid.length - 1; y++) { // y axis
             visible = true;
         }
 
-        // somehow loop through down + right records
-        // i had have it wrong
-
         for (let i = y + 1; i < grid.length; i++) { // down
-            if (grid[i][x] >= current) {
-                visible = true;
-            }
+            downArray.push(grid[i][x]);
         }
 
         for (let j = x + 1; j < grid[0].length; j++) { // right
-            if (grid[x][j] >= current) {
-                visible = true;
-            }
+            rightArray.push(grid[y][j]);
+        }
+
+        if (current > Math.max(...downArray) || current > Math.max(...rightArray)) {
+            visible = true;
         }
 
         if (visible === true) {
@@ -62,5 +57,4 @@ for (let y = 2; y < grid.length - 1; y++) { // y axis
     }
 }
 
-console.log(grid)
 fs.writeFileSync("./test1.out", total.toString(), "utf8");
