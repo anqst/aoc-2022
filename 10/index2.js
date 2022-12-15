@@ -17,6 +17,8 @@ let evalNum;
 
 while (currentLine < instructions.length) {
 
+    cycle++;
+
     if (currentJob.instruction === null) { // new instruction
 
         currentJob.instruction = instructions[currentLine];
@@ -36,6 +38,10 @@ while (currentLine < instructions.length) {
 
     currentJob.remainingCycles--;
 
+    if (cycle % 40 === 0) {
+        // skip to next line on CRT
+    }
+
     if (currentJob.remainingCycles === 0) { // end of instruction
 
         evalNum = parseInt(instructions[currentLine].split(" ")[1]);
@@ -44,14 +50,7 @@ while (currentLine < instructions.length) {
         currentLine++;
         currentJob.instruction = null;
     }
-
-    cycle++;
-
-    if (cycle % 40 === 0) {
-        // skip to next line on CRT
-    }
 };
-cycle--;
 console.log(cycle);
 
 fs.writeFileSync("./test2.out", "".toString(), "utf8");

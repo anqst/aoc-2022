@@ -18,6 +18,8 @@ let evalNum;
 
 while (currentLine < instructions.length) {
 
+    cycle++;
+
     if (currentJob.instruction === null) { // new instruction
 
         currentJob.instruction = instructions[currentLine];
@@ -36,7 +38,6 @@ while (currentLine < instructions.length) {
     }
 
     currentJob.remainingCycles--;
-    cycle++;
 
     if (cycle === 20 || cycle % 40 === 20) {
         signalStrengths.push(X * cycle);
@@ -51,7 +52,6 @@ while (currentLine < instructions.length) {
         currentJob.instruction = null;
     }
 };
-cycle--;
 
 console.log(signalStrengths);
 console.log(cycle);
